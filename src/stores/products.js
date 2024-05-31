@@ -22,9 +22,10 @@ export const useProductsStore = defineStore("products", () => {
   const selectedCategory = ref(1);
 
   const categories = [
-    { id: 1, name: "Sudaderas" },
-    { id: 2, name: "Tenis" },
-    { id: 3, name: "Lentes" },
+    { id: 1, name: "FERTILIZANTES" },
+    { id: 2, name: "MAQUINAS" },
+    { id: 3, name: "INSECTICIDAS" },
+    { id: 4, name: "VITAMINAS"},
   ];
 
   const q = query(collection(db, "products"), orderBy("availability", "asc"));

@@ -7,7 +7,7 @@ const store = useCouponStore()
     <div class="flex">
         <input type="text" placeholder="Ingresa un cupón" class="p-2 bg-white border-gray-300 w-full"
             v-model="store.couponInput">
-        <button type="button" class="p-3 bg-green-400 font-bold disabled:opacity-30" @click="store.applyCoupon"
+        <button type="button" class="p-3 bg-orange-500 font-bold disabled:opacity-30" @click="store.applyCoupon"
             :disabled="store.isValidCoupon">Canjear</button>
     </div>
     <p class="py-2 text-center text-sm font-extrabold">{{ store.couponValidationMessage }}</p>

@@ -15,7 +15,7 @@ const config = {
       },
       submit: {
         input:
-          "$reset bg-green-400 hover:bg-green-500 w-full p-2 font-bold uppercase disabled:opacity-50",
+          "$reset bg-orange-300 hover:bg-orange-400 w-full p-2 transition-colors font-bold uppercase disabled:opacity-50",
       },
     }),
   },

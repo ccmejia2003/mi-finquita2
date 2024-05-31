@@ -1,4 +1,5 @@
 <script setup>
+import { RouterLink } from 'vue-router';
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router';
 import Link from "@/components/Link.vue"
@@ -28,9 +29,7 @@ const submitHandler = async (data) => {
 </script>
 <template>
     <div>
-        <Link to="products">
-        Volver
-        </Link>
+        
         <h1 class="text-4xl font-black my-10">Nuevo Producto</h1>
         <div class="flex justify-center bg-white shadow">
             <div class="mt-10 p-10 w-full 2xl:w-2/4">
@@ -57,6 +56,9 @@ const submitHandler = async (data) => {
                         placeholder="Cantidad disponible" :validation-messages="{ required: 'La cantidad es obligatoria' }"
                         min="1" v-model.number="formData.availability" />
                 </FormKit>
+                <RouterLink to="/" class="flex justify-center rounded bg-orange-300 hover:bg-orange-400 transition-colors font-bold py-2 px-10 text-black">
+                VOLVER
+                </RouterLink>
             </div>
         </div>
     </div>

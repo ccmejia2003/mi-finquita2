@@ -6,10 +6,10 @@ const products = useProductsStore()
 </script>
 <template>
     <header
-        class="px-10 py-5 bg-gray-700 flex flex-col lg:flex-row gap-5 lg:items-center justify-between absolute top-0 w-full z-10">
+        class="px-10 py-5 bg-white flex flex-col lg:flex-row gap-5 lg:items-center justify-between absolute top-0 w-full z-10">
         <div>
             <Logo />
-            <div class="flex gap-5 text-white">
+            <div class="flex gap-5 text-black">
                 <h2 class="text-lg font-extrabold">Filtros: </h2>
                 <div class="flex items-center gap-2" v-for="category in products.categories" :key="category.id">
 
@@ -17,7 +17,7 @@ const products = useProductsStore()
                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                         :checked="products.selectedCategory === category.id"
                         @change="products.selectedCategory = +$event.target.value">
-                    <label class="text-gray-100">{{ category.name }}</label>
+                    <label class="text-gray-800">{{ category.name }}</label>
                 </div>
             </div>
         </div>
