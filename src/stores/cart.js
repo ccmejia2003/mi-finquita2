@@ -4,7 +4,11 @@ import { useCouponStore } from "./coupons";
 import { collection, addDoc, runTransaction, doc } from "firebase/firestore";
 import { useFirestore } from "vuefire";
 import { getCurrentDate } from "../helpers";
+import { useRouter } from "vue-router";
+import { onAuthStateChanged } from "firebase/auth";
+import { useFirebaseAuth } from "vuefire";
 
+// const auth = useAuthStore();
 export const useCartStore = defineStore("cart", () => {
   const coupon = useCouponStore();
   const db = useFirestore();
@@ -14,6 +18,9 @@ export const useCartStore = defineStore("cart", () => {
   const total = ref(0);
   const MAX_PRODUCTS = 5;
   const TAX_RATE = 0.1;
+
+  const auth = useFirebaseAuth();
+  const router = useRouter();
 
   watchEffect(() => {
     subtotal.value = items.value.reduce(
@@ -53,31 +60,37 @@ export const useCartStore = defineStore("cart", () => {
 
   async function checkout() {
     try {
-      await addDoc(collection(db, "sales"), {
-        items: items.value.map((item) => {
-          const { availability, category, ...data } = item;
-          return data;
-        }),
-        subtotal: subtotal.value,
-        taxes: taxes.value,
-        discount: coupon.discount,
-        total: total.value,
-        date: getCurrentDate(),
-      });
-
-      // Sustraer la cantidad de lo disponible
-      items.value.forEach(async (item) => {
-        const productRef = doc(db, "products", item.id);
-        await runTransaction(db, async (transaction) => {
-          const currentProduct = await transaction.get(productRef);
-          const availability =
-            currentProduct.data().availability - item.quantity;
-          transaction.update(productRef, { availability: availability });
+      if (auth.currentUser == null) {
+        console.log(auth.currentUser);
+        router.push("/login");
+      } else {
+        // Guardar la venta en la base de datos
+        await addDoc(collection(db, "sales"), {
+          items: items.value.map((item) => {
+            const { availability, category, ...data } = item;
+            return data;
+          }),
+          subtotal: subtotal.value,
+          taxes: taxes.value,
+          discount: coupon.discount,
+          total: total.value,
+          date: getCurrentDate(),
         });
-      });
-      // Reiniciar el state
-      $reset();
-      coupon.$reset();
+
+        // Sustraer la cantidad de lo disponible
+        items.value.forEach(async (item) => {
+          const productRef = doc(db, "products", item.id);
+          await runTransaction(db, async (transaction) => {
+            const currentProduct = await transaction.get(productRef);
+            const availability =
+              currentProduct.data().availability - item.quantity;
+            transaction.update(productRef, { availability: availability });
+          });
+        });
+        // Reiniciar el state
+        $reset();
+        coupon.$reset();
+      }
     } catch (error) {
       console.log(error);
     }

@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@formkit/themes": "^1.5.3",
-    "@formkit/vue": "^1.5.3",
+    "@formkit/vue": "^1.6.5",
     "firebase": "^10.7.2",
     "pinia": "^2.1.7",
     "uid": "^2.0.2",
