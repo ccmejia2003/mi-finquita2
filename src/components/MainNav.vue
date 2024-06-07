@@ -12,7 +12,6 @@ const products = useProductsStore()
             <div class="flex gap-5 text-black">
                 <h2 class="text-lg font-extrabold">Filtros: </h2>
                 <div class="flex items-center gap-2" v-for="category in products.categories" :key="category.id">
-
                     <input type="radio" name="category" :value="category.id"
                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
                         :checked="products.selectedCategory === category.id"
@@ -22,10 +21,12 @@ const products = useProductsStore()
             </div>
         </div>
         <nav>
+            <Link to="cart">
+                Carrito de Compras
+            </Link>
             <Link to="sales">
             Administrar
             </Link>
         </nav>
     </header>
 </template>
-

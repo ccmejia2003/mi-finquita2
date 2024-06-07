@@ -41,4 +41,3 @@ const coupon = useCouponStore()
         </button>
     </div>
 </template>
-

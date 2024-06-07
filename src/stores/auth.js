@@ -6,7 +6,9 @@ import {
   signInWithEmailAndPassword,
   onAuthStateChanged,
   signOut,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
+
 export const useAuthStore = defineStore("auth", () => {
   const auth = useFirebaseAuth();
   const router = useRouter();
@@ -18,6 +20,8 @@ export const useAuthStore = defineStore("auth", () => {
     "auth/user-not-found": "Usuario no encontrado",
     "auth/wrong-password": "El password es incorrecto",
     "auth/invalid-credential": "Credenciales Invalidas",
+    "auth/email-already-in-use": "El email ya está en uso",
+    "auth/weak-password": "La contraseña es demasiado débil",
   };
 
   onMounted(() => {
@@ -36,9 +40,21 @@ export const useAuthStore = defineStore("auth", () => {
         router.push({ name: "admin-propiedades" });
       })
       .catch((error) => {
-        errorMsg.value = errorCodes[error.code];
+        errorMsg.value = errorCodes[error.code] || "Error en el inicio de sesión";
       });
   };
+
+  const register = async ({ email, password }) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      authUser.value = userCredential.user;
+      router.push({ name: 'login' });
+    } catch (error) {
+      errorMsg.value = errorCodes[error.code] || "Error en el registro";
+      console.error(error);
+    }
+  };
+
   const logout = () => {
     signOut(auth)
       .then(() => {
@@ -53,12 +69,14 @@ export const useAuthStore = defineStore("auth", () => {
   const hasError = computed(() => {
     return errorMsg.value;
   });
+
   const isAuth = computed(() => {
     return authUser.value;
   });
 
   return {
     login,
+    register,
     hasError,
     errorMsg,
     authUser,
@@ -66,3 +84,4 @@ export const useAuthStore = defineStore("auth", () => {
     logout,
   };
 });
+
