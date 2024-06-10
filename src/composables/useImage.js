@@ -20,8 +20,7 @@ export default function useImage() {
     uploadTask.on(
       "state_changed",
       () => {},
-      (error) => console.log(error),
-      () => {
+      (error) => () => {
         // La imagen ya se subio
         getDownloadURL(uploadTask.snapshot.ref).then((dowloadURL) => {
           url.value = dowloadURL;

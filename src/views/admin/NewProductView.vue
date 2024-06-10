@@ -23,19 +23,20 @@ const submitHandler = async (data) => {
         await products.createProduct({ ...values, image: url.value })
         router.push({ name: 'products' })
     } catch (error) {
-        console.log(error);
+
     }
 }
 </script>
 <template>
     <div>
-        
+
         <h1 class="text-4xl font-black my-10">Nuevo Producto</h1>
         <div class="flex justify-center bg-white shadow">
             <div class="mt-10 p-10 w-full 2xl:w-2/4">
                 <FormKit type="form" submit-label="Agregar Producto"
                     incomplete-message="No se puedo enviar, revisa los mensajes" @submit="submitHandler">
-                    <FormKit type="text" label="Nombre" name="name" placeholder="Nombre de Producto" validation="required"
+                    <FormKit type="text" label="Nombre" name="name" placeholder="Nombre de Producto"
+                        validation="required"
                         :validation-messages="{ required: 'El Nombre del Producto es Obligatorio' }"
                         v-model.trim="formData.name" />
                     <FormKit type="file" label="Imagen Producto" name="image" validation="required"
@@ -53,14 +54,15 @@ const submitHandler = async (data) => {
                         :validation-messages="{ required: 'El precio de Producto es obligatorio' }" min="1"
                         v-model.trim="formData.price" />
                     <FormKit type="number" label="Disponibles" name="availability" validation="required"
-                        placeholder="Cantidad disponible" :validation-messages="{ required: 'La cantidad es obligatoria' }"
-                        min="1" v-model.number="formData.availability" />
+                        placeholder="Cantidad disponible"
+                        :validation-messages="{ required: 'La cantidad es obligatoria' }" min="1"
+                        v-model.number="formData.availability" />
                 </FormKit>
-                <RouterLink to="/" class="flex justify-center rounded bg-orange-300 hover:bg-orange-400 transition-colors font-bold py-2 px-10 text-black">
-                VOLVER
+                <RouterLink to="/"
+                    class="flex justify-center rounded bg-orange-300 hover:bg-orange-400 transition-colors font-bold py-2 px-10 text-black">
+                    VOLVER
                 </RouterLink>
             </div>
         </div>
     </div>
 </template>
-

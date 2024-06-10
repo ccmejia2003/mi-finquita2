@@ -3,6 +3,8 @@ import ShopView from "@/views/ShopView.vue";
 import AdminLayout from "@/views/admin/AdminLayout.vue";
 import { onAuthStateChanged } from "firebase/auth";
 import { useFirebaseAuth } from "vuefire";
+import Checkout from "../views/admin/Checkout.vue";
+import NotFound from "@/views/NotFound.vue";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -10,6 +12,18 @@ const router = createRouter({
       path: "/",
       name: "shop",
       component: ShopView,
+    },
+    {
+      path: "/checkout",
+      name: "check",
+      component: Checkout,
+      children: [
+        {
+          path: "carrito-de-compras",
+          name: "cart",
+          component: () => import("@/components/ShoppingCart.vue"),
+        },
+      ],
     },
     {
       path: "/login",
@@ -33,16 +47,12 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
-          path: "/Carriti-de-compras",
-          name: "cart",
-          component: () => import("@/components/ShoppingCart.vue")
-        },
-        {
           path: "ventas",
           name: "sales",
           component: () => import("../views/admin/SalesView.vue"),
           meta: { requiresAuth: true },
         },
+
         {
           path: "productos/nuevo",
           name: "new-product",
@@ -62,6 +72,11 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: NotFound,
+    },
   ],
 });
 
@@ -72,7 +87,6 @@ router.beforeEach(async (to, from, next) => {
       await authenticateUser();
       next();
     } catch (error) {
-      console.log(error);
       next({ name: "login" });
     }
   } else {

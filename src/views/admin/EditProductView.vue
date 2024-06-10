@@ -43,7 +43,7 @@ const submitHandler = async (data) => {
         await products.updateProduct(docRef, { ...data, url })
         router.push({ name: 'products' })
     } catch (error) {
-        console.log(error);
+
     }
 }
 
@@ -60,9 +60,10 @@ const submitHandler = async (data) => {
             <div class="mx-auto mt-10 p-10 w-full  2xl:w-2/4">
 
                 <FormKit type="form" :value="formData" submit-label="Guardar Cambios"
-                    incomplete-message="No se pudo enviar, revisa los mensajes" @submit="submitHandler" :actions="false">
-                    <FormKit type="text" label="Nombre" name="name" placeholder="Nombre de Producto" validation="required"
-                        v-model.trim="formData.name"
+                    incomplete-message="No se pudo enviar, revisa los mensajes" @submit="submitHandler"
+                    :actions="false">
+                    <FormKit type="text" label="Nombre" name="name" placeholder="Nombre de Producto"
+                        validation="required" v-model.trim="formData.name"
                         :validation-messages="{ required: 'El Nombre del Producto es Obligatorio' }" />
 
                     <FormKit type="select" label="Categoría" name="category" validation="required"

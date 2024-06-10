@@ -11,12 +11,16 @@
   "dependencies": {
     "@formkit/themes": "^1.5.3",
     "@formkit/vue": "^1.6.5",
+    "@fortawesome/fontawesome-svg-core": "^6.5.2",
+    "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@fortawesome/vue-fontawesome": "^3.0.8",
     "firebase": "^10.7.2",
     "pinia": "^2.1.7",
     "uid": "^2.0.2",
     "vue": "^3.3.11",
     "vue-router": "^4.2.5",
     "vue-tailwind-datepicker": "^1.6.1",
+    "vue-toast-notification": "^3.1.2",
     "vuefire": "^3.1.22"
   },
   "devDependencies": {

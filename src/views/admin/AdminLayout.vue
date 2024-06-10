@@ -7,4 +7,3 @@ import AdminNav from '@/components/AdminNav.vue'
         <RouterView />
     </div>
 </template>
-

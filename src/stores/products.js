@@ -19,19 +19,25 @@ export const useProductsStore = defineStore("products", () => {
   const db = useFirestore();
   const storage = useFirebaseStorage();
 
-  const selectedCategory = ref(1);
+  const selectedCategory = ref(0);
 
   const categories = [
+    { id: 0, name: "TODOS" },
     { id: 1, name: "FERTILIZANTES" },
     { id: 2, name: "MAQUINAS" },
     { id: 3, name: "INSECTICIDAS" },
-    { id: 4, name: "VITAMINAS"},
+    { id: 4, name: "VITAMINAS" },
   ];
 
   const q = query(collection(db, "products"), orderBy("availability", "asc"));
   const productsCollection = useCollection(q);
 
   const filterProducts = computed(() => {
+    if (selectedCategory.value === 0)
+      return productsCollection.value.filter(
+        (product) => product.availability > 0
+      );
+
     return productsCollection.value
       .filter((product) => product.category === selectedCategory.value)
       .filter((product) => product.availability > 0);

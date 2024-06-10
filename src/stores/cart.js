@@ -1,15 +1,16 @@
-import { ref, computed, watchEffect } from "vue";
+import { ref, computed, watchEffect, inject } from "vue";
 import { defineStore } from "pinia";
 import { useCouponStore } from "./coupons";
 import { collection, addDoc, runTransaction, doc } from "firebase/firestore";
 import { useFirestore } from "vuefire";
 import { getCurrentDate } from "../helpers";
 import { useRouter } from "vue-router";
-import { onAuthStateChanged } from "firebase/auth";
-import { useFirebaseAuth } from "vuefire";
+import { useAuthStore } from "./auth";
 
 // const auth = useAuthStore();
 export const useCartStore = defineStore("cart", () => {
+  const toast = inject("toast");
+  const authentication = useAuthStore();
   const coupon = useCouponStore();
   const db = useFirestore();
   const items = ref([]);
@@ -19,7 +20,6 @@ export const useCartStore = defineStore("cart", () => {
   const MAX_PRODUCTS = 5;
   const TAX_RATE = 0.1;
 
-  const auth = useFirebaseAuth();
   const router = useRouter();
 
   watchEffect(() => {
@@ -38,10 +38,12 @@ export const useCartStore = defineStore("cart", () => {
     const index = isItemInCart(item.id);
     if (index >= 0) {
       if (isProductAvailable(item, index)) {
-        alert("Has alcando el limite");
+        toast.open({
+          message: "Has alcanzado el limite",
+          type: "warning",
+        });
         return;
       }
-      // Actualizar la cantidad
       items.value[index].quantity++;
     } else {
       items.value.push({ ...item, quantity: 1, id: item.id });
@@ -58,13 +60,21 @@ export const useCartStore = defineStore("cart", () => {
     items.value = items.value.filter((item) => item.id !== id);
   }
 
+  function clearCart() {
+    items.value = [];
+  }
+
   async function checkout() {
     try {
-      if (auth.currentUser == null) {
-        console.log(auth.currentUser);
-        router.push("/login");
+      if (!authentication.authUser) {
+        toast.open({
+          message: "No has iniciado Sesión!",
+          type: "warning",
+        });
+        setTimeout(() => {
+          router.push({ name: "login" });
+        }, 2000);
       } else {
-        // Guardar la venta en la base de datos
         await addDoc(collection(db, "sales"), {
           items: items.value.map((item) => {
             const { availability, category, ...data } = item;
@@ -77,7 +87,6 @@ export const useCartStore = defineStore("cart", () => {
           date: getCurrentDate(),
         });
 
-        // Sustraer la cantidad de lo disponible
         items.value.forEach(async (item) => {
           const productRef = doc(db, "products", item.id);
           await runTransaction(db, async (transaction) => {
@@ -87,13 +96,10 @@ export const useCartStore = defineStore("cart", () => {
             transaction.update(productRef, { availability: availability });
           });
         });
-        // Reiniciar el state
         $reset();
         coupon.$reset();
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   }
 
   function $reset() {
@@ -113,6 +119,10 @@ export const useCartStore = defineStore("cart", () => {
 
   const isEmpty = computed(() => items.value.length === 0);
 
+  const countItem = computed(() => {
+    const count = items.value.length;
+    return count > 10 ? "10+" : count;
+  });
   const checkProductAvailability = computed(() => {
     return (product) =>
       product.availability < MAX_PRODUCTS ? product.availability : MAX_PRODUCTS;
@@ -129,5 +139,7 @@ export const useCartStore = defineStore("cart", () => {
     isEmpty,
     checkProductAvailability,
     updateQuantity,
+    countItem,
+    clearCart,
   };
 });

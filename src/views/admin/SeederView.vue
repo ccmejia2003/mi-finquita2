@@ -22,7 +22,7 @@ async function seedDB() {
             category: products[i - 1].category,
             image: url
         }).then(() => {
-            console.log("Producto Agregado...");
+
         }).catch((error) => {
             console.error(error);
         });
@@ -47,7 +47,7 @@ const handleSubmit = (data) => {
         uploadTask.on('state_changed', snapshot => {
             // Upload progress can be monitored here
         }, error => {
-            console.log(error)
+
         }, () => {
             // Upload is complete, get the download URL
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {

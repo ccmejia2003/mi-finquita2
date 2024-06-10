@@ -1,31 +1,15 @@
 <script setup>
-import { useRouter, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { useAuthStore } from '@/stores/auth'
-
 const route = useRoute()
-const router = useRouter()
 const authRoutes = [{ name: "login", text: "Volver A inicio" }];
 const auth = useAuthStore()
 
 const handleSubmit = (formData) => {
-    try {
-        const data = auth.login(formData)
-        router.push({ name: "admin" });
-    } catch (error) {
-        console.log(error);
-        console.log('Inicio fallido');
-    }
+    const { email, password } = formData
+    auth.login({ email, password })
 };
 
-const iraregistro = async () => {
-    try {
-        await auth.register({ email: email.value, password: password.value });
-        router.push({ name: 'login' });
-    } catch (error) {
-        errorMessage.value = error.message || 'Registration failed';
-        console.error(error);
-    }
-};
 </script>
 
 <template>
@@ -45,17 +29,20 @@ const iraregistro = async () => {
                     incomplete-message="No se puedo enviar, revisa las notificaciones" @submit="handleSubmit">
                     <FormKit type="email" label="Email" name="email" placeholder="Email de Usuario"
                         validation="required|email" :validation-messages="{
-                        required: 'El email es obligatorio',
-                        email: 'Email no valido',
-                        }"/>
-                        <FormKit type="password" label="Password" name="password" placeholder="Password de Usuario"
-                            validation="required" :validation-messages="{
+                            required: 'El email es obligatorio',
+                            email: 'Email no valido',
+                        }" />
+                    <FormKit type="password" label="Password" name="password" placeholder="Password de Usuario"
+                        validation="required" :validation-messages="{
                             required: 'El Password es obligatorio',
-                            }"/>
-                        <FormKit type="submit">Iniciar Sesión</FormKit>
+                        }" />
+                    <FormKit type="submit">Iniciar Sesión</FormKit>
                 </FormKit>
                 <p class="text-center mt-4">
-                    <RouterLink to="/Register" class="text-blue-500">Registrarse</RouterLink>
+                    Si no tienes una Cuenta <span>
+
+                        <RouterLink to="/register" class="text-orange-600 font-bold">Registrate</RouterLink>
+                    </span>
                 </p>
             </form>
         </div>
@@ -68,4 +55,3 @@ const iraregistro = async () => {
         </RouterLink>
     </nav>
 </template>
-

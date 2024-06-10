@@ -17,4 +17,3 @@ const { filterProducts, noResults } = storeToRefs(products)
         </div>
     </main>
 </template>
-

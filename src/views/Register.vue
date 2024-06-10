@@ -8,16 +8,9 @@ const auth = useAuthStore();
 
 const email = ref('');
 const password = ref('');
-const errorMessage = ref('');
 
-const handleRegister = async () => {
-    try {
-        await auth.register({ email: email.value, password: password.value });
-        router.push({ name: 'login' });
-    } catch (error) {
-        errorMessage.value = error.message || 'Registration failed';
-        console.error(error);
-    }
+const handleRegister = ({ email, password }) => {
+    auth.register({ email, password });
 };
 </script>
 
@@ -31,24 +24,25 @@ const handleRegister = async () => {
             Crea una nueva cuenta
         </p>
         <div class="bg-white px-16 rounded-md py-24 w-2/4">
-            <form @submit.prevent="handleRegister">
-                <div class="mb-4">
-                    <label for="email" class="block text-gray-700">Email</label>
-                    <input v-model="email" type="email" id="email" class="mt-1 block w-full border rounded-md" required>
-                </div>
-                <div class="mb-4">
-                    <label for="password" class="block text-gray-700">Password</label>
-                    <input v-model="password" type="password" id="password" class="mt-1 block w-full border rounded-md" required>
-                </div>
-                <div class="text-center text-red-500" v-if="errorMessage">{{ errorMessage }}</div>
-                <div class="flex justify-center mt-4">
-                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded-md">Registrarse</button>
-                </div>
-            </form>
-            <p class="text-center mt-4">
-                <RouterLink to="/login" class="text-blue-500">Iniciar Sesión</RouterLink>
-            </p>
+            <FormKit id="registerForm" type="form" @submit="handleRegister" :actions="false">
+                <FormKit type="email" v-model="email" label="Email" name="email" placeholder="Email de Usuario"
+                    validation="required|email" :validation-messages="{
+                        required: 'El email es obligatorio',
+                        email: 'Email no válido',
+                    }" />
+                <FormKit type="password" v-model="password" label="Password" name="password"
+                    placeholder="Password de Usuario" validation="required|min:6" :validation-messages="{
+                        required: 'El password es obligatorio',
+                        min: 'El password debe tener al menos 6 caracteres',
+                    }" />
+                <FormKit type="submit">Registrarse</FormKit>
+                <p class="text-center mt-4">
+                    Si ya tienes una cuenta <span>
+
+                        <RouterLink to="/login" class="text-orange-600 font-bold">Inicia Sesion</RouterLink>
+                    </span>
+                </p>
+            </FormKit>
         </div>
     </div>
 </template>
-
